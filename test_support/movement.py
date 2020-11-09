@@ -27,7 +27,6 @@ class MovementManager:
         self.ztraveled_last_movement = 0
         self.last_z_angular = 0
 
-
     def callback(self, data):
         
         # manage time
@@ -70,9 +69,6 @@ class MovementManager:
         sendmsg.linear.x = 0
         self.tpub.publish(sendmsg)
 
-        print 'The robot measured %f meters linear x' % self.xtraveled_last_movement
-        print 'The robot measured %f radians angular z' % self.ztraveled_last_movement
-
     def turn(self, distance=0):
         self.xtraveled_last_movement = 0
         self.ztraveled_last_movement = 0
@@ -88,6 +84,3 @@ class MovementManager:
         sendmsg.angular.z = 0
         sendmsg.linear.x = 0
         self.tpub.publish(sendmsg)
-
-        print 'The robot measured %f meters linear x' % self.xtraveled_last_movement
-        print 'The robot measured %f radians angular z' % self.ztraveled_last_movement
