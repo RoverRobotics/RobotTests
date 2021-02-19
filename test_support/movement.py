@@ -14,7 +14,7 @@ class MovementManager:
         rospy.init_node('movement_test')
 
         # create node for listening to the robot
-        self.tsub = rospy.Subscriber('/rr_openrover_driver/odom_encoder', Odometry, self.callback)
+        self.tsub = rospy.Subscriber('/odom', Odometry, self.callback)
         self.last_message_received_time = time.time()
         self.accumulated_time = 0
 
@@ -67,6 +67,7 @@ class MovementManager:
 
         sendmsg.angular.z = 0
         sendmsg.linear.x = 0
+        print self.xtraveled_last_movement
         self.tpub.publish(sendmsg)
 
     def turn(self, distance=0):
