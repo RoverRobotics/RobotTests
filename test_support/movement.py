@@ -10,7 +10,7 @@ class MovementManager:
         self.max_angular_speed = max_angular_speed
 
         # create node for communicating with the robot..
-        self.tpub = rospy.Publisher('/managed/key', Twist, queue_size=2)
+        self.tpub = rospy.Publisher('/managed/key', Twist, queue_size=1)
         rospy.init_node('movement_test')
 
         # create node for listening to the robot
@@ -30,15 +30,15 @@ class MovementManager:
     def callback(self, data):
         
         # manage time
-        current_message_time = time.time()
-        
+        current_message_time = (data.header.stamp.nsecs) * (10 ** -9) + data.header.stamp.secs 
         current_x_linear = data.twist.twist.linear.x
         current_z_angular = data.twist.twist.angular.z
 
         dt = current_message_time - self.last_message_received_time
+    
         dx = (current_x_linear + self.last_x_linear) * dt / 2
         dz = (current_z_angular + self.last_z_angular) * dt / 2
-
+        #print "dt ", dt , " dx ", dx
         self.xtraveled_last_movement += dx
         self.ztraveled_last_movement += dz
         self.accumulated_time += dt

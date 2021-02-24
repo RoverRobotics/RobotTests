@@ -54,6 +54,7 @@ class RobotTests(unittest.TestCase):
 
         # move forward 1 meter then backward
         self.movement_manager.move_straight(2)
+
         time.sleep(1)
         self.movement_manager.move_straight(-2)
         time.sleep(1)
@@ -63,7 +64,7 @@ class RobotTests(unittest.TestCase):
         
     def test_rotate_clockwise_fast(self):
         print_test_case_name(sys._getframe().f_code.co_name)
-        self.movement_manager.set_max_angular_velocity(1.24)
+        self.movement_manager.set_max_angular_velocity(.75)
         self.movement_manager.turn(-6.28)
         time.sleep(1)
 
@@ -72,7 +73,7 @@ class RobotTests(unittest.TestCase):
 
     def test_rotate_anticlockwise_fast(self):
         print_test_case_name(sys._getframe().f_code.co_name)
-        self.movement_manager.set_max_angular_velocity(1.24)
+        self.movement_manager.set_max_angular_velocity(0.75)
         self.movement_manager.turn(6.28)
         time.sleep(1)
 
