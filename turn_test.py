@@ -24,7 +24,7 @@ run_times = (3, 0.5, 3, 0.5)
 
 # motion should be pi/8, then pi/6, then pi/4, then pi/2
 angularz_set = [
-    ((-math.pi / denom, 0, math.pi / denom, 0), run_times) for i in reversed(range(2, 8, 2))
+    ((-math.pi / denom, 0, math.pi / denom, 0), run_times) for denom in reversed(range(2, 10, 2))
 ]
 
 twistmsg = Twist()
