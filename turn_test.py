@@ -5,6 +5,7 @@ from std_msgs.msg import Bool, Float32
 import time
 import os, signal
 import subprocess
+import math
 
 tpub = rospy.Publisher('/managed/key', Twist, queue_size=10)
 rospy.init_node('turn_test')
@@ -17,11 +18,13 @@ press enter to continue'
 x = raw_input("press enter.....")
 
 # build the bag file
-rosbag_proc = subprocess.Popen(["rosbag", "record", "managed/key", "rr_openrover_driver/odom_encoder"])
+# rosbag_proc = subprocess.Popen(["rosbag", "record", "managed/key", "rr_openrover_driver/odom_encoder"])
 
 run_times = (3, 0.5, 3, 0.5)
+
+# motion should be pi/8, then pi/6, then pi/4, then pi/2
 angularz_set = [
-    ((-i/8.0, 0, i/8.0, 0), run_times) for i in range(2, 9, 1)
+    ((-math.pi / denom, 0, math.pi / denom, 0), run_times) for i in reversed(range(2, 8, 2))
 ]
 
 twistmsg = Twist()
@@ -40,4 +43,4 @@ twistmsg.angular.z = 0
 tpub.publish(twistmsg)
 print 'complete'
 
-os.killpg(os.getpgid(rosbag_proc.pid), signal.SIGINT)
+#os.killpg(os.getpgid(rosbag_proc.pid), signal.SIGINT)
