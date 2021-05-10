@@ -11,7 +11,8 @@ tpub = rospy.Publisher('/managed/key', Twist, queue_size=10)
 rospy.init_node('turn_test')
 
 
-print 'CAUTION, the robot will move during this test \
+print 'Ensure the robot is in CLOSED LOOP mode, and the correct drive type is selected (see launch file)\
+CAUTION, the robot will move during this test \
 . Make sure robot has at least 1 meter of clearance in all directions. \
 press enter to continue'
 
