@@ -146,6 +146,8 @@ def system_ready_for_test():
         print 'exiting'
         exit()
 
+    return True
+
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(get_test_suite())
