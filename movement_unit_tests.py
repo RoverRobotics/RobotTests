@@ -138,22 +138,14 @@ def get_test_suite():
     test_suite.addTest(unittest.makeSuite(RotateAnticlockwiseFast))
     test_suite.addTest(unittest.makeSuite(SquareClockwise))
     test_suite.addTest(unittest.makeSuite(SquareAnticlockwise))
-    
 
-if __name__ == '__main__':
+    return test_suite
     
+def system_ready_for_test():
     if not user_accepts('is the robot ready to be moved? (clear by 2 meters all directions?) '):
         print 'exiting'
         exit()
 
-    if not user_accepts('is closed loop control on in the launch file? '):
-        print 'exiting'
-        exit()
-
-    if not user_accepts('is the drive type set appropriately (4wd / 2wd / flippers) in the launch file? '):
-        print 'exiting'
-        exit()
-
-    sn = raw_input('enter the device serial number:  ')
-
-    unittest.main()
+if __name__ == '__main__':
+    runner = unittest.TextTestRunner()
+    runner.run(get_test_suite())
