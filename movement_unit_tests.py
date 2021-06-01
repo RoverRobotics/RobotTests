@@ -132,10 +132,10 @@ def get_test_suite():
     test_suite.addTest(unittest.makeSuite(StraightFast))
     test_suite.addTest(unittest.makeSuite(StraightModerate))
     test_suite.addTest(unittest.makeSuite(StraightSlow))
-    test_suite.addTest(unittest.makeSuite(StraightSlow))
     test_suite.addTest(unittest.makeSuite(RotateClockwiseFast))
     test_suite.addTest(unittest.makeSuite(RotateClockwiseSlow))
     test_suite.addTest(unittest.makeSuite(RotateAnticlockwiseFast))
+    test_suite.addTest(unittest.makeSuite(RotateAnticlockwiseSlow))
     test_suite.addTest(unittest.makeSuite(SquareClockwise))
     test_suite.addTest(unittest.makeSuite(SquareAnticlockwise))
 
