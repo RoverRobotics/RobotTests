@@ -18,13 +18,15 @@ def print_test_case_name(function_name):
     banner = '\nRunning test case %s ' % function_name
     print banner
 
-class RobotTests(unittest.TestCase):
+class TestBase(unittest.TestCase):
     def setUp(self):
         self.movement_manager = MovementManager()
-    
-    def test_drive_straight_slow(self):
-        print_test_case_name(sys._getframe().f_code.co_name)
-        self.movement_manager.set_max_linear_velocity(0.25)
+    def runTest(self):
+        raise ValueError('test not implemented')
+
+class StraightFast(TestBase):
+    def runTest(self):
+        self.movement_manager.set_max_linear_velocity(0.75)
 
         # move forward 1 meter then backward
         self.movement_manager.move_straight(2)
@@ -33,10 +35,10 @@ class RobotTests(unittest.TestCase):
         time.sleep(1)
 
         if not user_accepts('did the robot move forward and backward equal distance of 2 meters and the same speed?'):
-            raise ValueError('SlowSpeedStraightTestError')
+            raise ValueError('FastSpeedStraightTestError')
 
-    def test_drive_straight_moderate(self):
-        print_test_case_name(sys._getframe().f_code.co_name)
+class StraightModerate(TestBase):
+    def runTest(self):
         self.movement_manager.set_max_linear_velocity(0.5)
 
         # move forward 1 meter then backward
@@ -48,22 +50,21 @@ class RobotTests(unittest.TestCase):
         if not user_accepts('did the robot move forward and backward equal distance of 2 meters and the same speed?'):
             raise ValueError('ModerateSpeedStraightTestError')
 
-    def test_drive_straight_fast(self):
-        print_test_case_name(sys._getframe().f_code.co_name)
-        self.movement_manager.set_max_linear_velocity(0.75)
+class StraightSlow(TestBase):
+    def runTest(self):
+        self.movement_manager.set_max_linear_velocity(0.25)
 
         # move forward 1 meter then backward
         self.movement_manager.move_straight(2)
-
         time.sleep(1)
         self.movement_manager.move_straight(-2)
         time.sleep(1)
 
         if not user_accepts('did the robot move forward and backward equal distance of 2 meters and the same speed?'):
-            raise ValueError('FastSpeedStraightTestError')
-        
-    def test_rotate_clockwise_fast(self):
-        print_test_case_name(sys._getframe().f_code.co_name)
+            raise ValueError('SlowSpeedStraightTestError')
+
+class RotateClockwiseFast(TestBase):
+    def runTest(self):
         self.movement_manager.set_max_angular_velocity(.75)
         self.movement_manager.turn(-6.28)
         time.sleep(1)
@@ -71,35 +72,35 @@ class RobotTests(unittest.TestCase):
         if not user_accepts('did the robot move 360 degrees (+/-) 45?'):
             raise ValueError('FastClockwiseTurnError')
 
-    def test_rotate_anticlockwise_fast(self):
-        print_test_case_name(sys._getframe().f_code.co_name)
-        self.movement_manager.set_max_angular_velocity(0.75)
-        self.movement_manager.turn(6.28)
-        time.sleep(1)
-
-        if not user_accepts('did the robot move 360 degrees (+/-) 45?'):
-            raise ValueError('FastAntiClockwiseTurnError')
-        
-    def test_rotate_clockwise_slow(self):
-        print_test_case_name(sys._getframe().f_code.co_name)
+class RotateClockwiseSlow(TestBase):
+    def runTest(self):
         self.movement_manager.set_max_angular_velocity(.628)
         self.movement_manager.turn(-6.28)
         time.sleep(1)   
 
         if not user_accepts('did the robot move 360 degrees (+/-) 45?'):
             raise ValueError('SlowClockwiseTurnError')
-        
-    def test_rotate_anticlockwise_slow(self):
-        print_test_case_name(sys._getframe().f_code.co_name)
+
+class RotateAnticlockwiseFast(TestBase):
+    def runTest(self):
+        self.movement_manager.set_max_angular_velocity(0.75)
+        self.movement_manager.turn(6.28)
+        time.sleep(1)
+
+        if not user_accepts('did the robot move 360 degrees (+/-) 45?'):
+            raise ValueError('FastAntiClockwiseTurnError')
+
+class RotateAnticlockwiseSlow(TestBase):
+    def runTest(self):
         self.movement_manager.set_max_angular_velocity(.628)
         self.movement_manager.turn(6.28)
         time.sleep(1)
 
         if not user_accepts('did the robot move 360 degrees (+/-) 45?'):
             raise ValueError('SlowAntiClockwiseTurnError')
-        
-    def test_square_clockwise(self):
-        print_test_case_name(sys._getframe().f_code.co_name)
+
+class SquareClockwise(TestBase):
+    def runTest(self):
         self.movement_manager.set_max_angular_velocity(1.24)
         self.movement_manager.set_max_linear_velocity(0.25)
 
@@ -111,9 +112,9 @@ class RobotTests(unittest.TestCase):
 
         if not user_accepts('did the robot drive in a shape resembling a square?'):
             raise ValueError('ClockwiseSquareError')
-        
-    def test_square_anticlockwise(self):
-        print_test_case_name(sys._getframe().f_code.co_name)
+
+class SquareAnticlockwise(TestBase):
+    def runTest(self):
         self.movement_manager.set_max_angular_velocity(1.24)
         self.movement_manager.set_max_linear_velocity(0.25)
 
@@ -125,6 +126,19 @@ class RobotTests(unittest.TestCase):
 
         if not user_accepts('did the robot drive in a shape resembling a square?'):
             raise ValueError('AntiClockwiseSquareError')
+
+def get_test_suite():
+    test_suite = unittest.TestSuite()
+    test_suite.addTest(unittest.makeSuite(StraightFast))
+    test_suite.addTest(unittest.makeSuite(StraightModerate))
+    test_suite.addTest(unittest.makeSuite(StraightSlow))
+    test_suite.addTest(unittest.makeSuite(StraightSlow))
+    test_suite.addTest(unittest.makeSuite(RotateClockwiseFast))
+    test_suite.addTest(unittest.makeSuite(RotateClockwiseSlow))
+    test_suite.addTest(unittest.makeSuite(RotateAnticlockwiseFast))
+    test_suite.addTest(unittest.makeSuite(SquareClockwise))
+    test_suite.addTest(unittest.makeSuite(SquareAnticlockwise))
+    
 
 if __name__ == '__main__':
     
