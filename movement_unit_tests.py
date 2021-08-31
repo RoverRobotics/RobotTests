@@ -26,6 +26,9 @@ class TestBase(unittest.TestCase):
 
 class StraightFast(TestBase):
     def runTest(self):
+        if not user_accepts('Next test: Fast drive straight and back. Are you ready?'):
+            print 'continuing anyway'
+
         self.movement_manager.set_max_linear_velocity(0.75)
 
         # move forward 1 meter then backward
@@ -39,6 +42,9 @@ class StraightFast(TestBase):
 
 class StraightModerate(TestBase):
     def runTest(self):
+        if not user_accepts('Next test: Medium drive straight and back. Are you ready?'):
+            print 'continuing anyway'
+
         self.movement_manager.set_max_linear_velocity(0.5)
 
         # move forward 1 meter then backward
@@ -52,6 +58,9 @@ class StraightModerate(TestBase):
 
 class StraightSlow(TestBase):
     def runTest(self):
+        if not user_accepts('Next test: Slow drive straight and back. Are you ready?'):
+            print 'continuing anyway'
+
         self.movement_manager.set_max_linear_velocity(0.25)
 
         # move forward 1 meter then backward
@@ -65,6 +74,9 @@ class StraightSlow(TestBase):
 
 class RotateClockwiseFast(TestBase):
     def runTest(self):
+        if not user_accepts('Next test: Fast Right turn. Are you ready?'):
+            print 'continuing anyway'
+
         self.movement_manager.set_max_angular_velocity(.75)
         self.movement_manager.turn(-6.28)
         time.sleep(1)
@@ -74,6 +86,9 @@ class RotateClockwiseFast(TestBase):
 
 class RotateClockwiseSlow(TestBase):
     def runTest(self):
+        if not user_accepts('Next test: Slow Right turn. Are you ready?'):
+            print 'continuing anyway'
+
         self.movement_manager.set_max_angular_velocity(.628)
         self.movement_manager.turn(-6.28)
         time.sleep(1)   
@@ -83,6 +98,9 @@ class RotateClockwiseSlow(TestBase):
 
 class RotateAnticlockwiseFast(TestBase):
     def runTest(self):
+        if not user_accepts('Next test: Fast Left turn. Are you ready?'):
+            print 'continuing anyway'
+
         self.movement_manager.set_max_angular_velocity(0.75)
         self.movement_manager.turn(6.28)
         time.sleep(1)
@@ -92,6 +110,9 @@ class RotateAnticlockwiseFast(TestBase):
 
 class RotateAnticlockwiseSlow(TestBase):
     def runTest(self):
+        if not user_accepts('Next test: Slow Left turn. Are you ready?'):
+            print 'continuing anyway'
+
         self.movement_manager.set_max_angular_velocity(.628)
         self.movement_manager.turn(6.28)
         time.sleep(1)
@@ -101,6 +122,9 @@ class RotateAnticlockwiseSlow(TestBase):
 
 class SquareClockwise(TestBase):
     def runTest(self):
+        if not user_accepts('Next test: Clockwise Box. Are you ready?'):
+            print 'continuing anyway'
+
         self.movement_manager.set_max_angular_velocity(1.24)
         self.movement_manager.set_max_linear_velocity(0.25)
 
@@ -115,6 +139,9 @@ class SquareClockwise(TestBase):
 
 class SquareAnticlockwise(TestBase):
     def runTest(self):
+        if not user_accepts('Next test: Counter clockwise Box. Are you ready?'):
+            print 'continuing anyway'
+
         self.movement_manager.set_max_angular_velocity(1.24)
         self.movement_manager.set_max_linear_velocity(0.25)
 
