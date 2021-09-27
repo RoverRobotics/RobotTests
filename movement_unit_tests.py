@@ -3,6 +3,7 @@ import unittest
 import time
 from test_support.movement import MovementManager
 import sys
+import os
 
 
 
@@ -29,6 +30,8 @@ class TestBase(unittest.TestCase):
         fh = logging.FileHandler("unittest.log")
         fh.setLevel(logging.DEBUG)
         self.logger.addHandler(fh)
+        with open(os.path.dirname(os.path.realpath(__file__)) + "/unittest.log", mode="a+") as f:
+            pass
 
     def runTest(self):
         raise ValueError('test not implemented')
