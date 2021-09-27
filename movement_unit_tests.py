@@ -1,8 +1,10 @@
+import logging
 import unittest
 import time
 from test_support.movement import MovementManager
 import sys
-import logging
+
+
 
 def user_accepts(question):
     
@@ -22,7 +24,12 @@ def print_test_case_name(function_name):
 class TestBase(unittest.TestCase):
     def setUp(self):
         self.movement_manager = MovementManager()
-        logging.basicConfig(filename="unittest.log", level=logging.DEBUG)
+        self.logger = logging.getLogger("testlog")
+        self.logger.setLevel(logging.DEBUG)
+        fh = logging.FileHandler("unittest.log")
+        fh.setLevel(logging.DEBUG)
+        self.logger.addHandler(fh)
+
     def runTest(self):
         raise ValueError('test not implemented')
 
@@ -165,21 +172,23 @@ class MinTurnSpeed(TestBase):
             self.movement_manager.set_max_angular_velocity(speed)
             self.movement_manager.turn(0.5 * 6.28)
             if user_accepts('Was the robot able to turn without stalling?'):
+                self.logger.debug('Min turn speed: %f' % speed)
                 return
 
-            raise ValueError('Robot has unacceptable minimum turn speed')
+        self.logger.error('Robot has unacceptable minimum turn speed')
+        raise ValueError('Robot has unacceptable minimum turn speed')
 
 def get_test_suite():
     test_suite = unittest.TestSuite()
-    test_suite.addTest(unittest.makeSuite(StraightFast))
-    test_suite.addTest(unittest.makeSuite(StraightModerate))
-    test_suite.addTest(unittest.makeSuite(StraightSlow))
-    test_suite.addTest(unittest.makeSuite(RotateClockwiseFast))
-    test_suite.addTest(unittest.makeSuite(RotateClockwiseSlow))
-    test_suite.addTest(unittest.makeSuite(RotateAnticlockwiseFast))
-    test_suite.addTest(unittest.makeSuite(RotateAnticlockwiseSlow))
-    test_suite.addTest(unittest.makeSuite(SquareClockwise))
-    test_suite.addTest(unittest.makeSuite(SquareAnticlockwise))
+    #test_suite.addTest(unittest.makeSuite(StraightFast))
+    #test_suite.addTest(unittest.makeSuite(StraightModerate))
+    #test_suite.addTest(unittest.makeSuite(StraightSlow))
+    #test_suite.addTest(unittest.makeSuite(RotateClockwiseFast))
+    #test_suite.addTest(unittest.makeSuite(RotateClockwiseSlow))
+    #test_suite.addTest(unittest.makeSuite(RotateAnticlockwiseFast))
+    #test_suite.addTest(unittest.makeSuite(RotateAnticlockwiseSlow))
+    #test_suite.addTest(unittest.makeSuite(SquareClockwise))
+    #test_suite.addTest(unittest.makeSuite(SquareAnticlockwise))
     test_suite.addTest(unittest.makeSuite(MinTurnSpeed))
 
     return test_suite
