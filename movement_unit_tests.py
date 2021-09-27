@@ -2,6 +2,7 @@ import unittest
 import time
 from test_support.movement import MovementManager
 import sys
+import logging
 
 def user_accepts(question):
     
@@ -21,13 +22,14 @@ def print_test_case_name(function_name):
 class TestBase(unittest.TestCase):
     def setUp(self):
         self.movement_manager = MovementManager()
+        logging.basicConfig(filename="unittest.log", level=logging.DEBUG)
     def runTest(self):
         raise ValueError('test not implemented')
 
 class StraightFast(TestBase):
     def runTest(self):
         if not user_accepts('Next test: Fast drive straight and back. Are you ready?'):
-            print 'continuing anyway'
+            exit()
 
         self.movement_manager.set_max_linear_velocity(0.75)
 
@@ -43,7 +45,7 @@ class StraightFast(TestBase):
 class StraightModerate(TestBase):
     def runTest(self):
         if not user_accepts('Next test: Medium drive straight and back. Are you ready?'):
-            print 'continuing anyway'
+            exit()
 
         self.movement_manager.set_max_linear_velocity(0.5)
 
@@ -59,7 +61,7 @@ class StraightModerate(TestBase):
 class StraightSlow(TestBase):
     def runTest(self):
         if not user_accepts('Next test: Slow drive straight and back. Are you ready?'):
-            print 'continuing anyway'
+            exit()
 
         self.movement_manager.set_max_linear_velocity(0.25)
 
@@ -75,7 +77,7 @@ class StraightSlow(TestBase):
 class RotateClockwiseFast(TestBase):
     def runTest(self):
         if not user_accepts('Next test: Fast Right turn. Are you ready?'):
-            print 'continuing anyway'
+            exit()
 
         self.movement_manager.set_max_angular_velocity(.75)
         self.movement_manager.turn(-6.28)
@@ -87,7 +89,7 @@ class RotateClockwiseFast(TestBase):
 class RotateClockwiseSlow(TestBase):
     def runTest(self):
         if not user_accepts('Next test: Slow Right turn. Are you ready?'):
-            print 'continuing anyway'
+            exit()
 
         self.movement_manager.set_max_angular_velocity(.628)
         self.movement_manager.turn(-6.28)
@@ -99,7 +101,7 @@ class RotateClockwiseSlow(TestBase):
 class RotateAnticlockwiseFast(TestBase):
     def runTest(self):
         if not user_accepts('Next test: Fast Left turn. Are you ready?'):
-            print 'continuing anyway'
+            exit()
 
         self.movement_manager.set_max_angular_velocity(0.75)
         self.movement_manager.turn(6.28)
@@ -111,7 +113,7 @@ class RotateAnticlockwiseFast(TestBase):
 class RotateAnticlockwiseSlow(TestBase):
     def runTest(self):
         if not user_accepts('Next test: Slow Left turn. Are you ready?'):
-            print 'continuing anyway'
+            exit()
 
         self.movement_manager.set_max_angular_velocity(.628)
         self.movement_manager.turn(6.28)
@@ -123,7 +125,7 @@ class RotateAnticlockwiseSlow(TestBase):
 class SquareClockwise(TestBase):
     def runTest(self):
         if not user_accepts('Next test: Clockwise Box. Are you ready?'):
-            print 'continuing anyway'
+            exit()
 
         self.movement_manager.set_max_angular_velocity(1.24)
         self.movement_manager.set_max_linear_velocity(0.25)
@@ -140,7 +142,7 @@ class SquareClockwise(TestBase):
 class SquareAnticlockwise(TestBase):
     def runTest(self):
         if not user_accepts('Next test: Counter clockwise Box. Are you ready?'):
-            print 'continuing anyway'
+            exit()
 
         self.movement_manager.set_max_angular_velocity(1.24)
         self.movement_manager.set_max_linear_velocity(0.25)
@@ -154,6 +156,19 @@ class SquareAnticlockwise(TestBase):
         if not user_accepts('did the robot drive in a shape resembling a square?'):
             raise ValueError('AntiClockwiseSquareError')
 
+class MinTurnSpeed(TestBase):
+    def runTest(self):
+        if not user_accepts('Next test: Min turn speed: Are you ready?'):
+            exit()
+
+        for speed in [0.3, 0.4, 0.5]:
+            self.movement_manager.set_max_angular_velocity(speed)
+            self.movement_manager.turn(0.5 * 6.28)
+            if user_accepts('Was the robot able to turn without stalling?'):
+                return
+
+            raise ValueError('Robot has unacceptable minimum turn speed')
+
 def get_test_suite():
     test_suite = unittest.TestSuite()
     test_suite.addTest(unittest.makeSuite(StraightFast))
@@ -165,6 +180,7 @@ def get_test_suite():
     test_suite.addTest(unittest.makeSuite(RotateAnticlockwiseSlow))
     test_suite.addTest(unittest.makeSuite(SquareClockwise))
     test_suite.addTest(unittest.makeSuite(SquareAnticlockwise))
+    test_suite.addTest(unittest.makeSuite(MinTurnSpeed))
 
     return test_suite
     
