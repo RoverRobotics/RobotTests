@@ -27,11 +27,12 @@ class TestBase(unittest.TestCase):
         self.movement_manager = MovementManager()
         self.logger = logging.getLogger("testlog")
         self.logger.setLevel(logging.DEBUG)
-        fh = logging.FileHandler("unittest.log")
-        fh.setLevel(logging.DEBUG)
-        self.logger.addHandler(fh)
         with open(os.path.dirname(os.path.realpath(__file__)) + "/unittest.log", mode="a+") as f:
             pass
+        fh = logging.FileHandler(os.path.dirname(os.path.realpath(__file__)) + "/unittest.log")
+        fh.setLevel(logging.DEBUG)
+        self.logger.addHandler(fh)
+        
 
     def runTest(self):
         raise ValueError('test not implemented')
