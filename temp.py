@@ -4,7 +4,7 @@ from movement_unit_tests import MovementManager
 
 
 
-collector = DataCollector("192.168.1.99", "80")
+collector = DataCollector("192.168.1.99", 80)
 
 processor = DataProcessor()
 

@@ -1,15 +1,16 @@
 import numpy
 import socket
 import threading
-import queue
+import struct
+import Queue
 import time
 class DataCollector:
     def __init__(self,ip,port) :
         self.ip_address = ip
         self.port = port
         self.data = None # return numpy array of data (N, data)
-        self.left_data = queue.Queue()
-        self.right_data = queue.Queue()
+        self.left_data = Queue.Queue()
+        self.right_data = Queue.Queue()
         self.buf = list()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         pass
@@ -21,22 +22,13 @@ class DataCollector:
         self.thread_should_run = True
         self.thread = threading.Thread(target=self.parse_).start()
 
-
     def parse_(self):
-        while self.connection_error == None and self.thread_should_run and ~self.socket._closed:
-            self.buf.append(int.from_bytes(self.socket.recv(1), "big"))
+        while self.connection_error == None and self.thread_should_run :
+            # self.buf.append(int.from_bytes(self.socket.recv(1), "big"))
+            self.buf.append(int(self.socket.recv(1).encode('hex'), 16))
             if len(self.buf) == 8 and self.buf[0:4] == [255, 0, 0, 0]:
-                # print(256*self.buf[4] + self.buf[5])
-                # print(256*self.buf[6] + self.buf[7])
-                # f.write(str(256*buf[4] + buf[5]) )
-                # f.write(",")
-                # test = [256*self.buf[4] + self.buf[5] , 256*self.buf[6] + self.buf[7]]
-                # print(test)
                 self.left_data.put(256*self.buf[4] + self.buf[5])
                 self.right_data.put(256*self.buf[6] + self.buf[7])
-                # self.left_data.append([256*self.buf[4] + self.buf[5]])
-                # self.right_data.append([256*self.buf[6] + self.buf[7]])
-                # self.data += numpy.append(self.data, [256*self.buf[4] + self.buf[5] , 256*self.buf[6] + self.buf[7]])
                 self.buf = list()
             elif len(self.buf) == 8:
                 del self.buf[0]
@@ -47,6 +39,7 @@ class DataCollector:
 
     def stop(self):
         '''stop data collection'''
+        self.thread = None
         self.thread_should_run = False
         self.buf = list() 
         # self.socket.close()
@@ -84,11 +77,11 @@ class DataCollector:
         return self.data
 
 
-#Test code
-a = DataCollector("192.168.1.99", 80)
-a.start()
-time.sleep(10)
-a.stop()
-data = a.get_data()
-a.save_to_file("./test.log")
-a.load_from_file("./test.log")
+# # #Test code
+# a = DataCollector("192.168.1.99", 80)
+# a.start()
+# time.sleep(2)
+# a.stop()
+# data = a.get_data()
+# a.save_to_file("./test.log")
+# a.load_from_file("./test.log")
