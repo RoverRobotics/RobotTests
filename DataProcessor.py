@@ -31,7 +31,8 @@ class DataProcessor:
         self.edges_per_rot = edges_per_rot
 
     def process_all(self, data):
-        '''return tuple of speed_1, speed_2, distance_1, distance_2'''
+        ''' Input: np.ndarray of shape (N, x) where N is number of samples, and x is number of laser channels.
+            Returns: np.ndarray of shape (N, y) where y is x * (distances, speeds)'''
         filtered = [self.filter_(d) for d in data[:, ]]
         edges = [self.edge_detect_(d) for d in filtered]
         distances = [self.get_distance_(d) for d in edges]
@@ -40,7 +41,7 @@ class DataProcessor:
         return np.hstack(distances, speeds)
     
     def filter_(self, data, filter=[.1,.2,.4,.2,.1], num_iter=FILTER_PASSES):
-        '''filter laser data to reduce noise'''
+        '''1d convolution filter for low-pass effect'''
 
         for _ in range(num_iter):
             data = np.convolve(np.squeeze(data), filter, mode='same').reshape(-1, 1)
@@ -72,7 +73,7 @@ class DataProcessor:
         return transitions
 
     def get_speed_(self, distances, smoothing_iters=5000, filter=[.1,.2,.4,.2,.1], thresh=0.05):
-        '''get speed for motor 1 (left) '''
+        '''translate distances into speeds'''
         # compute speed
         speed = np.gradient(distances) * self.sample_rate_hz
         
@@ -85,7 +86,7 @@ class DataProcessor:
         return speed
 
     def get_distance_(self, transitions):
-        '''get distance for motor 1 (left) '''
+        '''translate edge transitions into distances'''
         distances = list()
         distance = 0
         for i, t in enumerate(transitions):
