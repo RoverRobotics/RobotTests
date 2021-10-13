@@ -31,20 +31,20 @@ class DataProcessor:
         self.edges_per_rot = edges_per_rot
 
     def process_all(self, data):
-        ''' Input: np.ndarray of shape (N, x) where N is number of samples, and x is number of laser channels.
-            Returns: np.ndarray of shape (N, y) where y is x * (distances, speeds)'''
-        filtered = [self.filter_(d) for d in data[:, ]]
+        ''' Input: np.ndarray of shape (x, N) where N is number of samples, and x is number of laser channels.
+            Returns: np.ndarray of shape (y, N) where y is x * (distances, speeds)'''
+        filtered = [self.filter_(d) for d in data]
         edges = [self.edge_detect_(d) for d in filtered]
         distances = [self.get_distance_(d) for d in edges]
         speeds = [self.get_speed_(d) for d in distances]
 
-        return np.hstack(distances, speeds)
+        return np.vstack((distances, speeds))
     
     def filter_(self, data, filter=[.1,.2,.4,.2,.1], num_iter=FILTER_PASSES):
         '''1d convolution filter for low-pass effect'''
 
         for _ in range(num_iter):
-            data = np.convolve(np.squeeze(data), filter, mode='same').reshape(-1, 1)
+            data = np.convolve(np.squeeze(data), filter, mode='same')
 
         # gets rid of weird convolution artifacts that are bad
         data[0:CONV_PAD] = data[CONV_PAD + 1]
