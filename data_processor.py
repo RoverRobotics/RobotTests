@@ -24,7 +24,7 @@ def nan_helper(y):
     return np.isnan(y), lambda z: z.nonzero()[0]
 
 class DataProcessor:
-    def __init__(self, sample_rate_hz=2000, wheel_circumference=0.797964534, edges_per_rot=36):
+    def __init__(self, sample_rate_hz=4000, wheel_circumference=0.797964534, edges_per_rot=36):
         
         self.pdata = None
         self.rdata = None
