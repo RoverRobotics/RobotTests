@@ -14,10 +14,16 @@ class DataCollector:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         pass
     def connect(self):
-        return self.socket.connect((self.ip_address,self.port))
+        try:
+            return self.socket.connect((self.ip_address,self.port))
+        except:
+            return -200
+
     def start(self):
         '''connect the microcontroller and start data collection'''
         self.connection_error = self.connect()
+        if self.connection_error == -200:
+            return
         self.socket.send("s")
         self.thread_should_run = True
         self.thread = threading.Thread(target=self.parse_)
@@ -50,6 +56,7 @@ class DataCollector:
         self.thread.join()
         time.sleep(1)
         self.socket.close()
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         
         # self.socket.close()
         temp1 = list()
