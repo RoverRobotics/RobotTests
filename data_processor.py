@@ -14,6 +14,13 @@ def pairwise(iterable):
         yield (a, b)
         a = b
 
+def gkern(l=5, sig=1.):
+
+    ax = np.linspace(-(l-1)/ 2., (l - 1) / 2., l)
+    gauss = np.exp(-0.5 * np.square(ax) / np.square(sig))
+    kernel = np.outer(gauss, gauss)
+    return kernel / np.sum(kernel)
+
 def nan_helper(y):
     """Helper to handle indices and logical indices of NaNs.
 
@@ -32,7 +39,7 @@ def nan_helper(y):
     return np.isnan(y), lambda z: z.nonzero()[0]
 
 class DataProcessor:
-    def __init__(self, sample_rate_hz=1200, wheel_circumference=0.797964534, edges_per_rot=36):
+    def __init__(self, sample_rate_hz=3125, wheel_circumference=0.797964534, edges_per_rot=36):
         self.pdata = None
         self.rdata = None
         self.time_events = []
@@ -87,13 +94,13 @@ class DataProcessor:
 
         return transitions
 
-    def get_speed_(self, distances, smoothing_iters=1, filter=[.1,.2,.4,.2,.1], thresh=0.05):
+    def get_speed_(self, distances, smoothing_iters=10000, filter=np.sum(gkern(l=101, sig=1.), axis=0), thresh=0.05):
         '''translate distances into speeds'''
         # compute speed
         speed = np.gradient(distances) * self.sample_rate_hz
         
         # apply smoothing
-        speed = self.filter_(speed, num_iter=smoothing_iters)
+        speed = self.filter_(speed, filter=filter, num_iter=smoothing_iters)
 
         # clip low speeds
         speed[speed < thresh] = 0
