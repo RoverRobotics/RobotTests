@@ -5,6 +5,7 @@ from data_collector import DataCollector
 from movement_unit_tests import MovementManager
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 # class Controller:
 #     def __init__(self):
@@ -65,7 +66,10 @@ processor.register_command(0)
 collector.start()
 processor.register_command(.75)
 testmanager.move_straight(5)
+time.sleep(.5)
 collector.stop()
+
+testmanager = None
 ideal = processor.register_command(0, True)
 data = collector.get_data()
 data = np.vstack((data[0], data[0])) #faking second laser
