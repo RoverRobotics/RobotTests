@@ -4,6 +4,7 @@ from data_processor import DataProcessor
 from data_collector import DataCollector
 from movement_unit_tests import MovementManager
 import matplotlib.pyplot as plt
+import numpy as np
 
 # class Controller:
 #     def __init__(self):
@@ -60,15 +61,17 @@ processor = DataProcessor()
 
 testmanager = MovementManager()
 testmanager.set_max_linear_velocity(0.75)
-
+processor.register_command(0)
 collector.start()
-testmanager.move_straight(1)
+processor.register_command(.75)
+testmanager.move_straight(5)
 collector.stop()
+ideal = processor.register_command(0, True)
 data = collector.get_data()
+data = np.vstack((data[0], data[0])) #faking second laser
 p_data = processor.process_all(data)
 fig = processor.get_plots()
 fig.savefig("./temp.png")
-ideal = processor.register_command(0, True)
 # print(ideal)
 # plt.plot(ideal)
 
