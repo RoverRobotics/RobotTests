@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-FILTER_PASSES = 20
+FILTER_PASSES = 10
 CONV_PAD = 20
 
 
@@ -60,7 +60,7 @@ class DataProcessor:
 
         return data
         
-    def edge_detect_(self, data, kernel=[-1, 0, 1], threshold=0.3):
+    def edge_detect_(self, data, kernel=[-1, 0, 1], threshold=0.2):
         '''use edge detect to count rising edge (i.e changes in wheel surface)'''
 
         # convolve with edge detector kernel
