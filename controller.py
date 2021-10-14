@@ -6,24 +6,24 @@ from movement_unit_tests import MovementManager
 
 class Controller:
     def __init__(self):
-        self.collector = DataCollector("192.168.1.99", "80")
+        self.collector = DataCollector("192.168.1.99", 80)
         self.processor = DataProcessor()
         self.testmanager = MovementManager()
     def set_ip(self,ip):
         self.ip = ip
     def set_port(self, port):
-        self.port = port
-    def set_linear_velocity(meterpersec):
+        self.port = int(port)
+    def set_linear_velocity(self,meterpersec):
         self.linear = meterpersec
-    def set_angular_velocity(radianpersec):
+    def set_angular_velocity(self,radianpersec):
         self.angular = radianpersec
-    def start_move_straight(distance):
+    def start_move_straight(self,distance):
         self.collector.start()
         self.testmanager.set_max_linear_velocity(self.linear)
         self.testmanager.move_straight(distance)
         self.collector.stop()
-        data = collector.get_data()
-        p_data = processor.process_all(data)
+        data = self.collector.get_data()
+        p_data = self.processor.process_all(data)
         print(p_data)
     def start_rotate(radian):
         self.collector.start()

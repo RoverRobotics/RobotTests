@@ -1,15 +1,15 @@
 import numpy
 import socket
 import threading
-import queue
+import Queue
 import time
 class DataCollector:
     def __init__(self,ip,port) :
         self.ip_address = ip
         self.port = port
         self.data = None # return numpy array of data (N, data)
-        self.left_data = queue.Queue()
-        self.right_data = queue.Queue()
+        self.left_data = Queue.Queue()
+        self.right_data = Queue.Queue()
         self.buf = list()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         pass
