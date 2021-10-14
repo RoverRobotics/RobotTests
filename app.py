@@ -26,7 +26,7 @@ class App:
 
     def move_straight(self):
         self.mycontroller.set_linear_velocity(.75)
-        self.mycontroller.start_move_straight(5)
+        self.mycontroller.start_move_straight(1)
         tkMessageBox.showinfo( "Hello Python", "Move Straight")
         pass
 
