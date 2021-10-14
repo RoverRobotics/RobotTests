@@ -199,6 +199,8 @@ class DataProcessor:
 
             self.proc_time_events = equiv_commands
 
+            return self.proc_time_events
+
 
     def compare(expected_data, actual_data): #tuple of test_data(speed_1, speed_2, distance_1,distance_2) and similar for actual_data
         '''Compare list of test data with list of actual measured data and return an acuracy rating'''
