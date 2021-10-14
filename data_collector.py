@@ -20,12 +20,13 @@ class DataCollector:
         self.connection_error = self.connect()
         self.socket.send("s")
         self.thread_should_run = True
-        self.thread = threading.Thread(target=self.parse_).start()
+        self.thread = threading.Thread(target=self.parse_)
+        self.thread.start()
 
 
     def parse_(self):
         
-        while self.connection_error is None:
+        while self.connection_error is None and self.thread_should_run:
             # self.buf.append(int(self.socket.recv(8).encode('hex'),16))
             data = self.socket.recv(256)
             data = [int(d.encode('hex'),16)for d in data]
@@ -44,8 +45,12 @@ class DataCollector:
         '''stop data collection'''
         # self.thread = None
         self.socket.send("f")
-        time.sleep(5)
-
+        # time.sleep(10)
+        self.thread_should_run = False
+        self.thread.join()
+        time.sleep(1)
+        self.socket.close()
+        
         # self.socket.close()
         temp1 = list()
         temp2 = list()
