@@ -33,8 +33,7 @@ def nan_helper(y):
     return np.isnan(y), lambda z: z.nonzero()[0]
 
 class DataProcessor:
-    def __init__(self, sample_rate_hz=4000, wheel_circumference=0.797964534, edges_per_rot=36):
-        
+    def __init__(self, sample_rate_hz=2000, wheel_circumference=0.797964534, edges_per_rot=36):
         self.pdata = None
         self.rdata = None
         self.time_events = []
@@ -45,18 +44,12 @@ class DataProcessor:
     def process_all(self, data):
         ''' Input: np.ndarray of shape (x, N) where N is number of samples, and x is number of laser channels.
             Returns: np.ndarray of shape (y, N) where y is x * (distances, speeds)'''
-        
-        self.rdata = np.copy(data)
         filtered = [self.filter_(d) for d in data]
-        self.rdata = np.vstack((self.rdata, filtered))
-
         edges = [self.edge_detect_(d) for d in filtered]
         distances = [self.get_distance_(d) for d in edges]
         speeds = [self.get_speed_(d) for d in distances]
 
-        self.pdata = np.vstack((edges, distances, speeds))
-
-        return self.pdata
+        return np.vstack((distances, speeds))
     
     def filter_(self, data, filter=[.1,.2,.4,.2,.1], num_iter=FILTER_PASSES):
         '''1d convolution filter for low-pass effect'''
@@ -126,7 +119,7 @@ class DataProcessor:
 
         return distances
 
-    def get_plots(self, debug=False):
+    def plot(self, debug=False):
         '''plot data for visualization'''
         '''note: must call process_all() before calling this function'''
         if self.pdata is None:

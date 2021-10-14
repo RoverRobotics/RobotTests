@@ -1,16 +1,15 @@
 import numpy
 import socket
 import threading
-import struct
-import Queue
+import queue
 import time
 class DataCollector:
     def __init__(self,ip,port) :
         self.ip_address = ip
         self.port = port
         self.data = None # return numpy array of data (N, data)
-        self.left_data = Queue.Queue()
-        self.right_data = Queue.Queue()
+        self.left_data = queue.Queue()
+        self.right_data = queue.Queue()
         self.buf = list()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         pass
@@ -22,10 +21,10 @@ class DataCollector:
         self.thread_should_run = True
         self.thread = threading.Thread(target=self.parse_).start()
 
+
     def parse_(self):
-        while self.connection_error == None and self.thread_should_run :
-            # self.buf.append(int.from_bytes(self.socket.recv(1), "big"))
-            self.buf.append(int(self.socket.recv(1).encode('hex'), 16))
+        while self.connection_error == None and self.thread_should_run:
+            self.buf.append(int(self.socket.recv(1).encode('hex'),16))
             if len(self.buf) == 8 and self.buf[0:4] == [255, 0, 0, 0]:
                 self.left_data.put(256*self.buf[4] + self.buf[5])
                 self.right_data.put(256*self.buf[6] + self.buf[7])
@@ -77,10 +76,10 @@ class DataCollector:
         return self.data
 
 
-# # #Test code
+# #Test code
 # a = DataCollector("192.168.1.99", 80)
 # a.start()
-# time.sleep(2)
+# time.sleep(10)
 # a.stop()
 # data = a.get_data()
 # a.save_to_file("./test.log")
