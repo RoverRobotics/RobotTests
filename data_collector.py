@@ -79,13 +79,3 @@ class DataCollector:
         pass
     def get_data(self):
         return self.data
-
-
-# #Test code
-# a = DataCollector("192.168.1.99", 80)
-# a.start()
-# time.sleep(10)
-# a.stop()
-# data = a.get_data()
-# a.save_to_file("./test.log")
-# a.load_from_file("./test.log")
