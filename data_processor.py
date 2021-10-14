@@ -32,7 +32,7 @@ def nan_helper(y):
     return np.isnan(y), lambda z: z.nonzero()[0]
 
 class DataProcessor:
-    def __init__(self, sample_rate_hz=4000, wheel_circumference=0.797964534, edges_per_rot=36):
+    def __init__(self, sample_rate_hz=1200, wheel_circumference=0.797964534, edges_per_rot=36):
         self.pdata = None
         self.rdata = None
         self.time_events = []
@@ -87,7 +87,7 @@ class DataProcessor:
 
         return transitions
 
-    def get_speed_(self, distances, smoothing_iters=5000, filter=[.1,.2,.4,.2,.1], thresh=0.05):
+    def get_speed_(self, distances, smoothing_iters=1, filter=[.1,.2,.4,.2,.1], thresh=0.05):
         '''translate distances into speeds'''
         # compute speed
         speed = np.gradient(distances) * self.sample_rate_hz
