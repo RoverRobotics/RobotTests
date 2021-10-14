@@ -1,10 +1,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import time
+import itertools
 
 FILTER_PASSES = 10
 CONV_PAD = 20
 
+def pairwise(iterable):
+    it = iter(iterable)
+    a = next(it, None)
+
+    for b in it:
+        yield (a, b)
+        a = b
 
 def nan_helper(y):
     """Helper to handle indices and logical indices of NaNs.
@@ -28,6 +37,7 @@ class DataProcessor:
         
         self.pdata = None
         self.rdata = None
+        self.time_events = []
         self.sample_rate_hz = sample_rate_hz
         self.wheel_circumference = wheel_circumference
         self.edges_per_rot = edges_per_rot
@@ -170,6 +180,27 @@ class DataProcessor:
             fig.tight_layout()
            
             return fig
+
+    def register_command(self, lin_vel, terminate=False):
+        self.time_events.append([lin_vel, time.time()])
+        t_to_np = list()
+        if terminate:
+            for tecurr, tenext in pairwise(self.time_events):
+                time_elapsed = tenext[1] - tecurr[1]
+                time_in_ticks = int(np.floor(time_elapsed * self.sample_rate_hz))
+                t_to_np.append([tecurr[0], time_in_ticks])
+
+            self.time_events = []
+
+            t_to_np = np.array(t_to_np)
+
+            equiv_commands = np.zeros((int(np.sum(t_to_np[:, 1]))))
+            tick_counter = 0
+            for tc in t_to_np:
+                equiv_commands[tick_counter:tick_counter+int(tc[1])] = tc[0]
+                tick_counter += int(tc[1])
+
+            self.proc_time_events = equiv_commands
 
 
     def compare(expected_data, actual_data): #tuple of test_data(speed_1, speed_2, distance_1,distance_2) and similar for actual_data
